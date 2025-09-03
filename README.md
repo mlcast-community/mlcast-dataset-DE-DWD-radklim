@@ -1,5 +1,7 @@
 # mlcast-dataset-radklim
 
+<!-- SPDX-License-Identifier: Apache-2.0 OR BSD-3-Clause -->
+
 This repository contains code to convert the [RADKLIM dataset](https://opendata.dwd.de/climate_environment/CDC/help/landing_pages/doi_landingpage_RADKLIM_RW_V2017.002-en.html) to zarr.
 
 Eventually this repo with also contain an intake catalog with a reference to the data uploaded to the European Weather Cloud
@@ -72,3 +74,14 @@ PYTHONPATH=`pwd`:$PYTHONPATH pdm run luigi --module mlcast_dataset_radklim.zarr 
 ```
 
 To run with a single worker without using a luigi scheduler add `--local-scheduler` to the above commands.
+
+## License
+
+This project is dual-licensed under either:
+
+* Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
+* BSD 3-Clause License ([LICENSE-BSD](LICENSE-BSD) or https://opensource.org/licenses/BSD-3-Clause)
+
+at your option.
+
+See [LICENSE](LICENSE) for more details.
