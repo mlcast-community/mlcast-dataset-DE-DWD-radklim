@@ -289,7 +289,13 @@ class WriteZarrTask(luigi.Task):
             self.chunking
         )
 
-        # all values for the projection data-array (crs) are the same, we only need to keep one
+        # The variable with the precipitation data is named "RR" in the
+        # original netCDF files, but we want to rename it to "rainfall_amount"
+        # because the units and standard_name suggest a rainfall amount rather than a flux
+        ds = ds.rename({"RR": "rainfall_amount"})
+
+        # all values for the projection data-array (crs) are the same, we only
+        # need to keep one
         ds["crs"] = ds.crs.isel(time=0)
 
         crs_wkt = ds.crs.attrs["crs_wkt"]
@@ -315,14 +321,20 @@ class WriteZarrTask(luigi.Task):
         ds.x.attrs["units"] = "km"
         ds.y.attrs["units"] = "km"
 
-        # add meta info about the zarr dataset creation
-        date = datetime.datetime.now().isoformat()
-        ds.attrs["zarr_creation"] = (
-            "created with mlcast_dataset_radklim "
-            f"(https://github.com/mlcast-community/mlcast-dataset-radklim) on {date} "
-            "by Leif Denby (lcd@dmi.dk)"
+        # add global metadata following the mlcast metadata specification
+        # https://github.com/mlcast-community/mlcast-dataset-validator
+        date = datetime.datetime.now().replace(microsecond=0).isoformat()
+        ds.attrs["mlcast_created_on"] = date
+        ds.attrs["mlcast_created_by"] = "Leif Denby <lcd@dmi.dk>"
+        ds.attrs["mlcast_created_with"] = (
+            "https://github.com/mlcast-community/mlcast-dataset-DE-DWD-radklim"
+            f"@v{__version__}"
         )
-        ds.attrs["zarr_dataset_version"] = __version__
+        ds.attrs["mlcast_dataset_version"] = __version__
+        ds.attrs["mlcast_dataset_identifier"] = "DE-DWD-radar_precipitation-RADKLIM"
+        ds.attrs[
+            "mlcast_dataset_identifier_format"
+        ] = "{country_code}-{entity}-{physical_variable}-{common_name}"
 
         # Write the dataset to Zarr format
         ds.to_zarr(output_path, mode="w", consolidated=True)
