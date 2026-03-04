@@ -1,6 +1,6 @@
 [project]
 name = "mlcast-dataset-radklim"
-version = "0.1.0"
+version = "0.1.1"
 description = "Default template for PDM package"
 authors = [
     {name = "Leif Denby", email = "leif@denby.eu"},
