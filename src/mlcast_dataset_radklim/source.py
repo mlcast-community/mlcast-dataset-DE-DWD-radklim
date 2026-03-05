@@ -15,6 +15,7 @@ hourly acc:      https://opendata.dwd.de/climate_environment/CDC/grids_germany/h
                  https://opendata.dwd.de/climate_environment/CDC/grids_germany/5_minutes/radolan/reproc/2017_002/netCDF/supplement/YW2017.002_2021_netcdf_supplement.tar.gz
 
 """
+
 import tarfile
 from pathlib import Path
 
@@ -120,13 +121,16 @@ class DownloadTask(luigi.Task):
         total_size = int(response.headers.get("content-length", 0))
         output_path = Path(self.output().path)
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        with output_path.open("wb") as out_file, tqdm(
-            desc=f"Downloading {self.year}",
-            total=total_size,
-            unit="B",
-            unit_scale=True,
-            unit_divisor=1024,
-        ) as bar:
+        with (
+            output_path.open("wb") as out_file,
+            tqdm(
+                desc=f"Downloading {self.year}",
+                total=total_size,
+                unit="B",
+                unit_scale=True,
+                unit_divisor=1024,
+            ) as bar,
+        ):
             for chunk in response.iter_content(chunk_size=8192):
                 out_file.write(chunk)
                 bar.update(len(chunk))

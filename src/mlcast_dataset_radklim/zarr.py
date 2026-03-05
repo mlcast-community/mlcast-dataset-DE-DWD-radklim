@@ -332,9 +332,9 @@ class WriteZarrTask(luigi.Task):
         )
         ds.attrs["mlcast_dataset_version"] = __version__
         ds.attrs["mlcast_dataset_identifier"] = "DE-DWD-radar_precipitation-RADKLIM"
-        ds.attrs[
-            "mlcast_dataset_identifier_format"
-        ] = "{country_code}-{entity}-{physical_variable}-{common_name}"
+        ds.attrs["mlcast_dataset_identifier_format"] = (
+            "{country_code}-{entity}-{physical_variable}-{common_name}"
+        )
 
         # Write the dataset to Zarr format
         ds.to_zarr(output_path, mode="w", consolidated=True)
